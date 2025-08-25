@@ -49,7 +49,7 @@
             font-weight: 300;
         }
 
-        .upload-section {
+        .input-section {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 24px;
@@ -57,6 +57,86 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.15);
             margin-bottom: 40px;
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(159, 122, 234, 0.1), rgba(118, 75, 162, 0.05));
+            color: #7c3aed;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #9f7aea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(159, 122, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .url-input-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 18px 25px;
+            border: 3px solid rgba(159, 122, 234, 0.3);
+            border-radius: 15px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: #9f7aea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(159, 122, 234, 0.1);
+        }
+
+        .load-button {
+            padding: 18px 35px;
+            background: linear-gradient(135deg, #9f7aea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .load-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(159, 122, 234, 0.4);
+        }
+
+        .load-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .upload-zone {
@@ -215,6 +295,66 @@
             margin-bottom: 30px;
         }
 
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .overview-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(159, 122, 234, 0.15);
+        }
+
+        .overview-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4c1d95, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .change-type-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(159, 122, 234, 0.1);
+        }
+
+        .change-type-item:last-child {
+            border-bottom: none;
+        }
+
+        .change-type-name {
+            font-weight: 600;
+            color: #4c1d95;
+            flex: 1;
+        }
+
+        .change-type-count {
+            background: linear-gradient(135deg, #9f7aea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
         .changes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
@@ -286,10 +426,11 @@
             font-size: 1.1rem;
         }
 
-        .change-details {
+        .change-summary {
             font-size: 0.95rem;
             color: #6b46c1;
             line-height: 1.5;
+            margin-bottom: 8px;
         }
 
         .change-time {
@@ -372,6 +513,15 @@
             .stat-number {
                 font-size: 2.5rem;
             }
+
+            .input-tabs {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .url-input-container {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -379,16 +529,37 @@
     <div class="container">
         <div class="header">
             <h1>Google Ads Change History Dashboard</h1>
-            <p>Upload your change history CSV to analyze weekly campaign modifications</p>
+            <p>Analyze your weekly campaign modifications from CSV URL or file upload</p>
         </div>
 
-        <div class="upload-section">
-            <div class="upload-zone" id="uploadZone">
-                <div class="upload-icon">📊</div>
-                <div class="upload-text">Drag & drop your CSV file here</div>
-                <div class="upload-subtext">or click to browse files</div>
-                <input type="file" id="fileInput" accept=".csv" />
+        <div class="input-section">
+            <div class="input-tabs">
+                <button class="tab-button active" onclick="switchTab('url')">📡 Load from URL</button>
+                <button class="tab-button" onclick="switchTab('file')">📁 Upload File</button>
             </div>
+
+            <div class="tab-content active" id="urlTab">
+                <div class="url-input-container">
+                    <input 
+                        type="url" 
+                        id="csvUrl" 
+                        class="url-input" 
+                        placeholder="Paste your GitHub raw CSV URL here..."
+                        value="https://raw.githubusercontent.com/Xgrows-Marketing/mobius-luckygolf/refs/heads/main/changestill25aug.csv"
+                    />
+                    <button class="load-button" id="loadUrlBtn" onclick="loadFromUrl()">Load Data</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="fileTab">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📊</div>
+                    <div class="upload-text">Drag & drop your CSV file here</div>
+                    <div class="upload-subtext">or click to browse files</div>
+                    <input type="file" id="fileInput" accept=".csv" />
+                </div>
+            </div>
+
             <div class="error-message" id="errorMessage"></div>
             <div class="success-message" id="successMessage"></div>
         </div>
@@ -418,6 +589,21 @@
                 </div>
             </div>
 
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-title">📊 Change Types Overview</div>
+                    <div id="changeTypesOverview"></div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-title">🎯 Most Active Campaigns</div>
+                    <div id="activeCampaigns"></div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-title">👥 User Activity</div>
+                    <div id="userActivity"></div>
+                </div>
+            </div>
+
             <div class="chart-container">
                 <div class="chart-title">Weekly Changes Trend</div>
                 <canvas id="weeklyChart" width="400" height="200"></canvas>
@@ -439,30 +625,90 @@
         let parsedData = [];
         let weeklyChart, campaignChart;
 
-        // File upload handling
-        const uploadZone = document.getElementById('uploadZone');
-        const fileInput = document.getElementById('fileInput');
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
-        const loading = document.getElementById('loading');
-        const dashboard = document.getElementById('dashboard');
-
-        uploadZone.addEventListener('click', () => fileInput.click());
-        uploadZone.addEventListener('dragover', handleDragOver);
-        uploadZone.addEventListener('drop', handleDrop);
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragover');
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            // Auto-load the default URL on page load
+            setTimeout(() => {
+                if (document.getElementById('csvUrl').value) {
+                    loadFromUrl();
+                }
+            }, 500);
         });
-        fileInput.addEventListener('change', handleFileSelect);
+
+        function setupEventListeners() {
+            // File upload handling
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+            
+            uploadZone.addEventListener('click', () => fileInput.click());
+            uploadZone.addEventListener('dragover', handleDragOver);
+            uploadZone.addEventListener('drop', handleDrop);
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('dragover');
+            });
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // URL input enter key handling
+            document.getElementById('csvUrl').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loadFromUrl();
+                }
+            });
+        }
+
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+        }
+
+        async function loadFromUrl() {
+            const url = document.getElementById('csvUrl').value.trim();
+            const loadBtn = document.getElementById('loadUrlBtn');
+            
+            if (!url) {
+                showError('Please enter a CSV URL');
+                return;
+            }
+            
+            loadBtn.disabled = true;
+            loadBtn.textContent = 'Loading...';
+            
+            showLoading();
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch CSV: ${response.status} ${response.statusText}`);
+                }
+                
+                const csvText = await response.text();
+                parseCSVData(csvText);
+                
+            } catch (error) {
+                console.error('Fetch error:', error);
+                hideLoading();
+                showError('Error loading CSV from URL: ' + error.message);
+            } finally {
+                loadBtn.disabled = false;
+                loadBtn.textContent = 'Load Data';
+            }
+        }
 
         function handleDragOver(e) {
             e.preventDefault();
-            uploadZone.classList.add('dragover');
+            document.getElementById('uploadZone').classList.add('dragover');
         }
 
         function handleDrop(e) {
             e.preventDefault();
-            uploadZone.classList.remove('dragover');
+            document.getElementById('uploadZone').classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 processFile(files[0]);
@@ -476,30 +722,23 @@
             }
         }
 
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-            successMessage.style.display = 'none';
-        }
-
-        function showSuccess(message) {
-            successMessage.textContent = message;
-            successMessage.style.display = 'block';
-            errorMessage.style.display = 'none';
-        }
-
         function processFile(file) {
             if (!file.name.toLowerCase().endsWith('.csv')) {
                 showError('Please upload a CSV file.');
                 return;
             }
 
-            loading.style.display = 'block';
-            dashboard.style.display = 'none';
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
+            showLoading();
 
-            Papa.parse(file, {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                parseCSVData(e.target.result);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSVData(csvText) {
+            Papa.parse(csvText, {
                 header: true,
                 skipEmptyLines: true,
                 dynamicTyping: false,
@@ -516,10 +755,13 @@
                         
                         // Filter out the title row and empty rows
                         parsedData = results.data.filter(row => {
-                            return row['Date & time'] && 
-                                   row['Date & time'].trim() !== '' && 
-                                   row['Date & time'] !== 'Change history report' &&
-                                   !row['Date & time'].includes('August 1, 2025 - August 25, 2025');
+                            const dateTime = row['Date & time'] || row['Date'] || '';
+                            return dateTime && 
+                                   dateTime.trim() !== '' && 
+                                   dateTime !== 'Change history report' &&
+                                   !dateTime.includes('August 1, 2025 - August 25, 2025') &&
+                                   !dateTime.toLowerCase().includes('date') &&
+                                   dateTime.match(/\d/); // Must contain at least one digit
                         });
                         
                         console.log('Filtered data:', parsedData);
@@ -530,38 +772,65 @@
                         
                         processData();
                         showSuccess(`Successfully processed ${parsedData.length} records`);
-                        loading.style.display = 'none';
-                        dashboard.style.display = 'block';
+                        hideLoading();
+                        showDashboard();
                     } catch (error) {
                         console.error('Processing error:', error);
-                        loading.style.display = 'none';
+                        hideLoading();
                         showError('Error processing file: ' + error.message);
                     }
                 },
                 error: function(error) {
                     console.error('Papa Parse error:', error);
-                    loading.style.display = 'none';
+                    hideLoading();
                     showError('Error reading file: ' + error.message);
                 }
             });
         }
 
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('dashboard').style.display = 'block';
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successEl = document.getElementById('successMessage');
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
         function processData() {
-            // Clean and parse the data
             const cleanData = parsedData.map(row => {
-                // Parse the date - handle the special characters in your format
-                const dateStr = row['Date & time'];
+                // Parse the date - handle various formats
+                const dateStr = row['Date & time'] || row['Date'] || '';
                 let parsedDate;
                 
                 try {
                     // Clean the date string - remove special Unicode characters
                     const cleanDateStr = dateStr.replace(/â€¯/g, ' ').replace(/\u202F/g, ' ').trim();
-                    console.log('Parsing date:', cleanDateStr);
                     
                     parsedDate = new Date(cleanDateStr);
                     
                     if (isNaN(parsedDate.getTime())) {
-                        // Try alternative parsing for your specific format
+                        // Try alternative parsing
                         const altFormat = cleanDateStr.replace(/,\s+(\d+:\d+:\d+.*?[AP]M)/i, ' $1');
                         parsedDate = new Date(altFormat);
                         
@@ -576,13 +845,15 @@
                 }
 
                 const weekInfo = getWeekInfo(parsedDate);
+                const changes = row['Changes'] || '';
                 
                 return {
                     date: parsedDate,
                     user: row['User'] || '',
                     campaign: row['Campaign'] || 'Account Level',
                     adGroup: row['Ad group'] || '',
-                    changes: row['Changes'] || '',
+                    changes: changes,
+                    changeType: categorizeChange(changes),
                     week: weekInfo.week,
                     weekYear: weekInfo.weekYear,
                     weekDisplay: weekInfo.display
@@ -594,10 +865,31 @@
 
             console.log('Processed data:', cleanData);
 
-            // Calculate statistics
+            // Update all dashboard components
             updateStats(cleanData);
+            updateOverview(cleanData);
             createCharts(cleanData);
             displayWeeklyChanges(cleanData);
+        }
+
+        function categorizeChange(changeText) {
+            if (!changeText) return 'Other';
+            
+            const text = changeText.toLowerCase();
+            
+            // Categorize based on common Google Ads change types
+            if (text.includes('keyword') || text.includes('match type')) return 'Keywords';
+            if (text.includes('bid') || text.includes('cpc') || text.includes('budget')) return 'Bidding & Budget';
+            if (text.includes('ad') && (text.includes('created') || text.includes('added') || text.includes('text'))) return 'Ad Creative';
+            if (text.includes('audience') || text.includes('demographic') || text.includes('targeting')) return 'Targeting';
+            if (text.includes('extension') || text.includes('sitelink')) return 'Ad Extensions';
+            if (text.includes('campaign') && (text.includes('setting') || text.includes('status'))) return 'Campaign Settings';
+            if (text.includes('location') || text.includes('geographic')) return 'Location Targeting';
+            if (text.includes('device') || text.includes('mobile') || text.includes('desktop')) return 'Device Targeting';
+            if (text.includes('schedule') || text.includes('time') || text.includes('hour')) return 'Ad Scheduling';
+            if (text.includes('negative') || text.includes('excluded')) return 'Negative Keywords';
+            
+            return 'Other';
         }
 
         function getWeekInfo(date) {
@@ -629,6 +921,65 @@
             animateNumber('campaignCount', uniqueCampaigns);
             animateNumber('weekCount', uniqueWeeks);
             animateNumber('avgChanges', avgChanges);
+        }
+
+        function updateOverview(data) {
+            // Change Types Overview
+            const changeTypes = {};
+            data.forEach(row => {
+                const type = row.changeType;
+                changeTypes[type] = (changeTypes[type] || 0) + 1;
+            });
+
+            const sortedChangeTypes = Object.entries(changeTypes)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 6);
+
+            const changeTypesContainer = document.getElementById('changeTypesOverview');
+            changeTypesContainer.innerHTML = sortedChangeTypes.map(([type, count]) => `
+                <div class="change-type-item">
+                    <div class="change-type-name">${type}</div>
+                    <div class="change-type-count">${count}</div>
+                </div>
+            `).join('');
+
+            // Most Active Campaigns
+            const campaignActivity = {};
+            data.forEach(row => {
+                const campaign = row.campaign;
+                campaignActivity[campaign] = (campaignActivity[campaign] || 0) + 1;
+            });
+
+            const sortedCampaigns = Object.entries(campaignActivity)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 6);
+
+            const activeCampaignsContainer = document.getElementById('activeCampaigns');
+            activeCampaignsContainer.innerHTML = sortedCampaigns.map(([campaign, count]) => `
+                <div class="change-type-item">
+                    <div class="change-type-name">${campaign.length > 25 ? campaign.substring(0, 25) + '...' : campaign}</div>
+                    <div class="change-type-count">${count}</div>
+                </div>
+            `).join('');
+
+            // User Activity
+            const userActivity = {};
+            data.forEach(row => {
+                const user = row.user || 'Unknown';
+                userActivity[user] = (userActivity[user] || 0) + 1;
+            });
+
+            const sortedUsers = Object.entries(userActivity)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 6);
+
+            const userActivityContainer = document.getElementById('userActivity');
+            userActivityContainer.innerHTML = sortedUsers.map(([user, count]) => `
+                <div class="change-type-item">
+                    <div class="change-type-name">${user}</div>
+                    <div class="change-type-count">${count}</div>
+                </div>
+            `).join('');
         }
 
         function animateNumber(elementId, targetNumber) {
@@ -766,7 +1117,9 @@
             campaignChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: sortedCampaigns.map(([campaign]) => campaign),
+                    labels: sortedCampaigns.map(([campaign]) => 
+                        campaign.length > 20 ? campaign.substring(0, 20) + '...' : campaign
+                    ),
                     datasets: [{
                         data: sortedCampaigns.map(([, count]) => count),
                         backgroundColor: colors,
@@ -792,6 +1145,31 @@
                     }
                 }
             });
+        }
+
+        function summarizeChange(changeText, maxLength = 80) {
+            if (!changeText || changeText.length <= maxLength) return changeText;
+            
+            // Extract key information from the change
+            const lines = changeText.split('\n').filter(line => line.trim());
+            
+            if (lines.length === 0) return changeText.substring(0, maxLength) + '...';
+            
+            // Try to get a meaningful summary
+            let summary = lines[0];
+            
+            // Look for action words and important details
+            const actionWords = ['Added', 'Changed', 'Removed', 'Updated', 'Created', 'Modified', 'Set'];
+            const hasAction = actionWords.some(word => summary.includes(word));
+            
+            if (!hasAction && lines.length > 1) {
+                summary = lines.find(line => actionWords.some(word => line.includes(word))) || summary;
+            }
+            
+            // Clean up the summary
+            summary = summary.replace(/^\s*[-•]\s*/, ''); // Remove bullet points
+            
+            return summary.length > maxLength ? summary.substring(0, maxLength) + '...' : summary;
         }
 
         function displayWeeklyChanges(data) {
@@ -837,7 +1215,8 @@
                 // Sort changes by date within week (newest first)
                 weekChanges.sort((a, b) => b.date - a.date);
 
-                weekChanges.forEach(change => {
+                // Show only top 5 changes per week to keep it manageable
+                weekChanges.slice(0, 5).forEach(change => {
                     const changeItem = document.createElement('div');
                     changeItem.className = 'change-item';
                     
@@ -845,21 +1224,27 @@
                     campaign.className = 'change-campaign';
                     campaign.textContent = change.campaign;
                     
-                    const details = document.createElement('div');
-                    details.className = 'change-details';
-                    // Show first line of changes, truncate if too long
-                    const firstLine = change.changes.split('\n')[0];
-                    details.textContent = firstLine.length > 100 ? firstLine.substring(0, 100) + '...' : firstLine;
+                    const summary = document.createElement('div');
+                    summary.className = 'change-summary';
+                    summary.innerHTML = `<strong>${change.changeType}:</strong> ${summarizeChange(change.changes)}`;
                     
                     const time = document.createElement('div');
                     time.className = 'change-time';
-                    time.textContent = change.date.toLocaleString();
+                    time.textContent = `${change.date.toLocaleDateString()} at ${change.date.toLocaleTimeString()} by ${change.user}`;
                     
                     changeItem.appendChild(campaign);
-                    changeItem.appendChild(details);
+                    changeItem.appendChild(summary);
                     changeItem.appendChild(time);
                     weekCard.appendChild(changeItem);
                 });
+
+                if (weekChanges.length > 5) {
+                    const moreItem = document.createElement('div');
+                    moreItem.className = 'change-item';
+                    moreItem.style.opacity = '0.7';
+                    moreItem.innerHTML = `<div class="change-summary"><em>... and ${weekChanges.length - 5} more changes</em></div>`;
+                    weekCard.appendChild(moreItem);
+                }
 
                 container.appendChild(weekCard);
             });
